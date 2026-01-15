@@ -1,4 +1,4 @@
-[README (3).md](https://github.com/user-attachments/files/24644397/README.3.md)
+[README.md](https://github.com/user-attachments/files/24644397/README.3.md)
 # Regulatory Radar Widget
 
 Automated enforcement intelligence for European financial services regulators.
