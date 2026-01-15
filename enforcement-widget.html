@@ -3,346 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enforcement Watch Widget</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Enforcement Watch</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
-  
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: transparent;
-      padding: 0;
-      margin: 0;
-    }
-
-    .widget-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .enforcement-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    .loading-state,
-    .error-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #242322;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      margin: 0 auto 1rem;
-      border: 4px solid #e5e7eb;
-      border-top: 4px solid #3b82f6;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .enforcement-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-    }
-
-    .enforcement-card:hover {
-      border-color: #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 1rem;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .source-badge {
-      font-size: 11px;
-      font-weight: 700;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: transparent; }
+    .widget-container { max-width: 1200px; margin: 0 auto; }
+    .enforcement-grid { display: grid; gap: 1.5rem; }
+    .enforcement-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; transition: all 0.2s ease; }
+    .enforcement-card:hover { border-color: #3b82f6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+    .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap; }
+    .source-badge { font-size: 11px; font-weight: 700; color: white; padding: 6px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
     .source-badge-esma { background: #3b82f6; }
     .source-badge-ecb { background: #10b981; }
     .source-badge-eba { background: #8b5cf6; }
     .source-badge-amf { background: #f59e0b; }
-
-    .card-date {
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #242322;
-      margin-bottom: 0.75rem;
-      line-height: 1.4;
-    }
-
-    .card-title a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .card-title a:hover {
-      color: #3b82f6;
-    }
-
-    .card-summary {
-      font-size: 15px;
-      color: #242322;
-      opacity: 0.85;
-      line-height: 1.6;
-    }
-
-    .error-state {
-      background: #fee;
-      border: 1px solid #fca5a5;
-      border-radius: 8px;
-      padding: 2rem;
-      color: #ef4444;
-    }
-
+    .card-date { font-size: 14px; color: #6b7280; }
+    .card-title { font-size: 18px; font-weight: 600; color: #242322; margin-bottom: 0.75rem; line-height: 1.4; }
+    .card-title a { color: inherit; text-decoration: none; }
+    .card-title a:hover { color: #3b82f6; }
+    .card-summary { font-size: 15px; color: #242322; opacity: 0.85; line-height: 1.6; }
+    .last-updated { text-align: center; font-size: 13px; color: #6b7280; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
     @media (max-width: 768px) {
-      .enforcement-card {
-        padding: 1.25rem;
-      }
-      
-      .card-title {
-        font-size: 16px;
-      }
+      .enforcement-card { padding: 1.25rem; }
+      .card-title { font-size: 16px; }
     }
   </style>
 </head>
 <body>
   <div class="widget-container">
-    <div id="enforcement-container" class="enforcement-grid">
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading enforcement actions...</p>
+    <div class="enforcement-grid">
+
+      <div class="enforcement-card">
+        <div class="card-header">
+          <span class="source-badge source-badge-esma">ESMA</span>
+          <span class="card-date">Today</span>
+        </div>
+        <h3 class="card-title">
+          <a href="https://www.esma.europa.eu/press-news/esma-news/european-supervisory-authorities-and-uk-financial-regulators-sign-memorandum" target="_blank" rel="noopener">
+            The European Supervisory Authorities and UK financial regulators sign Memorandum of Understanding on oversight of critical ICT third-party service providers under DORA
+          </a>
+        </h3>
+        <p class="card-summary">
+          <span class="field field--name-title field--type-string field--label-hidden">The European Supervisory Authorities and UK financial regulators sign Memorandum of Understanding on oversight of critical ICT third-party service providers under DORA</span>
+  
+<span class="field field--name-created field--type-created field--label-hidden"><time class="datetime" datetime="2026-01-14T11:09:01+01:00" title="Wednesday, January 14, 2026 - 11:09">14 January 2026</time>
+</span>
+
+      <div class="field field
+        </p>
+      </div>
+      <div class="enforcement-card">
+        <div class="card-header">
+          <span class="source-badge source-badge-esma">ESMA</span>
+          <span class="card-date">Today</span>
+        </div>
+        <h3 class="card-title">
+          <a href="https://www.esma.europa.eu/press-news/esma-news/esma-promotes-clarity-communications-esg-strategies" target="_blank" rel="noopener">
+            ESMA promotes clarity in communications on ESG strategies
+          </a>
+        </h3>
+        <p class="card-summary">
+          <span class="field field--name-title field--type-string field--label-hidden">ESMA promotes clarity in communications on ESG strategies</span>
+  
+<span class="field field--name-created field--type-created field--label-hidden"><time class="datetime" datetime="2026-01-14T09:52:57+01:00" title="Wednesday, January 14, 2026 - 09:52">14 January 2026</time>
+</span>
+
+      <div class="field field--name-field-news-section field--type-entity-reference field--label-hidden field__items">
+              <div c
+        </p>
+      </div>
+      <div class="enforcement-card">
+        <div class="card-header">
+          <span class="source-badge source-badge-esma">ESMA</span>
+          <span class="card-date">Today</span>
+        </div>
+        <h3 class="card-title">
+          <a href="https://www.esma.europa.eu/press-news/esma-news/esmas-digital-and-data-strategies-support-supervision-eu-financial-markets" target="_blank" rel="noopener">
+            ESMA’s Digital and Data strategies support supervision of EU financial markets
+          </a>
+        </h3>
+        <p class="card-summary">
+          <span class="field field--name-title field--type-string field--label-hidden">ESMA’s Digital and Data strategies support supervision of EU financial markets</span>
+  
+<span class="field field--name-created field--type-created field--label-hidden"><time class="datetime" datetime="2026-01-13T14:56:36+01:00" title="Tuesday, January 13, 2026 - 14:56">13 January 2026</time>
+</span>
+
+      <div class="field field--name-field-news-section field--type-entity-reference field--label-hidden field__items">
+ 
+        </p>
+      </div>
+      <div class="enforcement-card">
+        <div class="card-header">
+          <span class="source-badge source-badge-esma">ESMA</span>
+          <span class="card-date">Today</span>
+        </div>
+        <h3 class="card-title">
+          <a href="https://www.esma.europa.eu/press-news/esma-news/principles-risk-based-supervision-critical-pillar-esmas-simplification-and" target="_blank" rel="noopener">
+            Principles for risk-based supervision: a critical pillar for ESMA’s simplification and burden reduction efforts
+          </a>
+        </h3>
+        <p class="card-summary">
+          <span class="field field--name-title field--type-string field--label-hidden">Principles for risk-based supervision: a critical pillar for ESMA’s simplification and burden reduction efforts</span>
+  
+<span class="field field--name-created field--type-created field--label-hidden"><time class="datetime" datetime="2026-01-09T09:47:34+01:00" title="Friday, January 9, 2026 - 09:47">09 January 2026</time>
+</span>
+
+      <div class="field field--name-field-news-section field--type-entity-reference field
+        </p>
+      </div>
+      <div class="enforcement-card">
+        <div class="card-header">
+          <span class="source-badge source-badge-esma">ESMA</span>
+          <span class="card-date">Today</span>
+        </div>
+        <h3 class="card-title">
+          <a href="https://www.esma.europa.eu/press-news/esma-news/esas-publish-joint-guidelines-esg-stress-testing" target="_blank" rel="noopener">
+            ESAs publish joint Guidelines on ESG stress testing
+          </a>
+        </h3>
+        <p class="card-summary">
+          <span class="field field--name-title field--type-string field--label-hidden">ESAs publish joint Guidelines on ESG stress testing</span>
+  
+<span class="field field--name-created field--type-created field--label-hidden"><time class="datetime" datetime="2026-01-08T13:43:23+01:00" title="Thursday, January 8, 2026 - 13:43">08 January 2026</time>
+</span>
+
+      <div class="field field--name-field-news-section field--type-entity-reference field--label-hidden field__items">
+              <div class="fi
+        </p>
       </div>
     </div>
+    <div class="last-updated">Last updated: 15 January 2026 at 15:06 UTC</div>
   </div>
-
-  <script>
-    const CONFIG = {
-      sources: [
-        {
-          name: 'ESMA',
-          url: 'https://www.esma.europa.eu/rss.xml',
-          badgeClass: 'source-badge-esma',
-          weight: 10
-        },
-        {
-          name: 'ECB',
-          url: 'https://www.bankingsupervision.europa.eu/rss/pub.html',
-          badgeClass: 'source-badge-ecb',
-          weight: 9
-        },
-        {
-          name: 'EBA',
-          url: 'https://www.eba.europa.eu/news-press/news/rss.xml',
-          badgeClass: 'source-badge-eba',
-          weight: 9
-        },
-        {
-          name: 'AMF',
-          url: 'https://www.amf-france.org/en/flux-rss/display/23',
-          badgeClass: 'source-badge-amf',
-          weight: 7
-        }
-      ],
-      keywords: [
-        'enforcement', 'sanction', 'fine', 'penalty', 'breach',
-        'violation', 'measure', 'misconduct', 'infringement',
-        'non-compliance', 'failure to', 'supervisory'
-      ],
-      limit: 5,
-      cacheDuration: 4 * 60 * 60 * 1000
-    };
-
-    const PROXY = 'https://api.rss2json.com/v1/api.json';
-
-    async function fetchFeed(source) {
-      try {
-        const url = `${PROXY}?rss_url=${encodeURIComponent(source.url)}&count=20`;
-        const response = await fetch(url);
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
-        const data = await response.json();
-        if (data.status !== 'ok') throw new Error('Feed error');
-        
-        return (data.items || []).map(item => ({
-          ...item,
-          source: source.name,
-          badgeClass: source.badgeClass,
-          weight: source.weight
-        }));
-      } catch (error) {
-        console.error(`Error loading ${source.name}:`, error);
-        return [];
-      }
-    }
-
-    function matchesKeywords(item) {
-      const text = `${item.title} ${item.description || ''}`.toLowerCase();
-      return CONFIG.keywords.some(kw => text.includes(kw.toLowerCase()));
-    }
-
-    function calculateScore(item) {
-      let score = item.weight;
-      
-      const text = `${item.title} ${item.description || ''}`.toLowerCase();
-      const matches = CONFIG.keywords.filter(kw => text.includes(kw.toLowerCase())).length;
-      score += matches * 2;
-      
-      const age = (Date.now() - new Date(item.pubDate)) / (1000 * 60 * 60 * 24);
-      score += Math.max(10 - age, 0);
-      
-      if (/€|\beur\b|\bmillion\b/i.test(text)) score += 5;
-      
-      return score;
-    }
-
-    function formatDate(dateString) {
-      try {
-        const date = new Date(dateString);
-        const days = Math.floor((Date.now() - date) / (1000 * 60 * 60 * 24));
-        
-        if (days === 0) return 'Today';
-        if (days === 1) return 'Yesterday';
-        if (days < 7) return `${days} days ago`;
-        
-        return date.toLocaleDateString('en-GB', { 
-          day: 'numeric', 
-          month: 'short', 
-          year: 'numeric' 
-        });
-      } catch {
-        return 'Recently';
-      }
-    }
-
-    function cleanText(html, maxLength) {
-      if (!html) return '';
-      const text = html.replace(/<[^>]*>/g, '').trim();
-      if (text.length <= maxLength) return text;
-      return text.substring(0, maxLength).trim() + '...';
-    }
-
-    function displayItems(items) {
-      const container = document.getElementById('enforcement-container');
-      
-      if (!items || items.length === 0) {
-        container.innerHTML = `
-          <div class="error-state">
-            <p><strong>Unable to load enforcement actions</strong></p>
-            <p>Please check back later or visit regulator websites directly.</p>
-          </div>
-        `;
-        return;
-      }
-      
-      container.innerHTML = items.map(item => `
-        <div class="enforcement-card">
-          <div class="card-header">
-            <span class="source-badge ${item.badgeClass}">${item.source}</span>
-            <span class="card-date">${formatDate(item.pubDate)}</span>
-          </div>
-          <h3 class="card-title">
-            <a href="${item.link}" target="_blank" rel="noopener">
-              ${item.title}
-            </a>
-          </h3>
-          <p class="card-summary">
-            ${cleanText(item.description, 200)}
-          </p>
-        </div>
-      `).join('');
-    }
-
-    function getCache() {
-      try {
-        const cached = localStorage.getItem('enforcement_cache_v1');
-        if (!cached) return null;
-        
-        const { data, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp < CONFIG.cacheDuration) return data;
-        
-        return null;
-      } catch {
-        return null;
-      }
-    }
-
-    function setCache(data) {
-      try {
-        localStorage.setItem('enforcement_cache_v1', JSON.stringify({
-          data,
-          timestamp: Date.now()
-        }));
-      } catch (error) {
-        console.warn('Cache save failed:', error);
-      }
-    }
-
-    async function loadData() {
-      const cached = getCache();
-      if (cached) {
-        displayItems(cached);
-        return;
-      }
-      
-      const allItems = [];
-      
-      for (const source of CONFIG.sources) {
-        const items = await fetchFeed(source);
-        const filtered = items.filter(matchesKeywords);
-        allItems.push(...filtered);
-      }
-      
-      const scored = allItems
-        .map(item => ({ ...item, score: calculateScore(item) }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, CONFIG.limit);
-      
-      if (scored.length > 0) setCache(scored);
-      
-      displayItems(scored);
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadData);
-    } else {
-      loadData();
-    }
-  </script>
 </body>
 </html>
