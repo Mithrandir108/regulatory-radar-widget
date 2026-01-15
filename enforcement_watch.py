@@ -34,6 +34,13 @@ SOURCE_CONFIG = {
     "fca": {"badge": "source-badge-fca", "name": "FCA"},
 }
 
+ENFORCEMENT_KEYWORDS = [
+    'fine', 'fines', 'fined', 'penalty', 'penalties', 'sanction', 'sanctions',
+    'enforcement', 'breach', 'breaches', 'violation', 'violations',
+    'non-compliance', 'misconduct', 'infringement', 'disciplinary',
+    'supervisory measure', 'administrative penalty'
+]
+
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,6 +150,26 @@ def fetch_rss_articles(days_ago=7):
     return articles
 
 
+def apply_keyword_fallback(articles, limit=5):
+    """
+    Fallback filter using keywords when Claude API fails.
+    Returns articles containing enforcement-related keywords.
+    """
+    filtered = []
+    
+    for article in articles:
+        text = f"{article['title']} {article['summary']}".lower()
+        
+        # Check if article contains enforcement keywords
+        if any(keyword in text for keyword in ENFORCEMENT_KEYWORDS):
+            filtered.append(article)
+    
+    # Sort by publication date (most recent first)
+    filtered.sort(key=lambda x: x['published'], reverse=True)
+    
+    return filtered[:limit]
+
+
 def filter_with_claude(articles, api_key):
     client = Anthropic(api_key=api_key)
     
@@ -160,6 +187,9 @@ EXCLUDE:
 - Policy announcements without enforcement
 - Market data, statistics
 - Conferences, events
+- Memorandums of Understanding (MoU)
+- Strategic communications
+- ESG strategies without enforcement
 
 Articles:
 {json.dumps(articles, indent=2, ensure_ascii=False)}
@@ -169,7 +199,7 @@ Return 5 most relevant enforcement actions with:
 - summary: 2-3 sentences focusing on: WHO was penalized, WHAT violation, HOW MUCH fine
 - Keep summaries under 150 words
 
-JSON format:
+JSON format ONLY (no markdown, no preamble):
 {{
   "selected_articles": [
     {{
@@ -189,10 +219,22 @@ JSON format:
             messages=[{"role": "user", "content": prompt}]
         )
         
-        response = message.content[0].text.replace("```json", "").replace("```", "").strip()
+        response = message.content[0].text.strip()
+        
+        # Remove markdown code blocks if present
+        if response.startswith("```"):
+            response = response.split("```")[1]
+            if response.startswith("json"):
+                response = response[4:]
+            response = response.strip()
+        
         data = json.loads(response)
-        return data["selected_articles"]
+        return data.get("selected_articles", [])
     
+    except json.JSONDecodeError as e:
+        print(f"\n❌ Claude API returned invalid JSON: {e}")
+        print(f"   Response preview: {response[:200]}...")
+        return []
     except Exception as e:
         print(f"\n❌ Claude API Error: {e}")
         return []
@@ -267,8 +309,13 @@ def main():
     print(f"   → {len(filtered)} enforcement actions selected\n")
     
     if not filtered:
-        print("⚠️  No enforcement actions found. Using fallback data.\n")
-        filtered = articles[:5]
+        print("⚠️  Claude filtering failed. Applying keyword fallback...\n")
+        filtered = apply_keyword_fallback(articles, limit=5)
+        print(f"   → {len(filtered)} articles after keyword fallback\n")
+    
+    if not filtered:
+        print("⚠️  No enforcement actions found even with fallback.\n")
+        filtered = articles[:3]  # Last resort: show 3 most recent
     
     print("📝 Generating HTML...")
     html = generate_html(filtered)
