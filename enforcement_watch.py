@@ -39,7 +39,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background-color: transparent; padding: 2rem 0; }
     .widget-container { max-width: 1200px; margin: 0 auto; }
     .enforcement-grid { display: grid; gap: 1.5rem; }
     .enforcement-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; transition: all 0.2s ease; }
