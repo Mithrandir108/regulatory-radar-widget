@@ -21,6 +21,8 @@ RSS_FEEDS = {
     "ecb": "https://www.bankingsupervision.europa.eu/rss/pub.html",
     "eba": "https://www.eba.europa.eu/news-press/news/rss.xml",
     "amf": "https://www.amf-france.org/en/flux-rss/display/23",
+    "bafin": "https://www.bafin.de/SiteGlobals/Functions/RSSFeed/EN/RSSNewsfeed_EN",
+    "fca": "https://www.fca.org.uk/news/rss.xml",
 }
 
 SOURCE_CONFIG = {
@@ -28,6 +30,8 @@ SOURCE_CONFIG = {
     "ecb": {"badge": "source-badge-ecb", "name": "ECB"},
     "eba": {"badge": "source-badge-eba", "name": "EBA"},
     "amf": {"badge": "source-badge-amf", "name": "AMF"},
+    "bafin": {"badge": "source-badge-bafin", "name": "BaFin"},
+    "fca": {"badge": "source-badge-fca", "name": "FCA"},
 }
 
 HTML_TEMPLATE = """<!DOCTYPE html>
@@ -50,6 +54,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     .source-badge-ecb { background: #10b981; }
     .source-badge-eba { background: #8b5cf6; }
     .source-badge-amf { background: #f59e0b; }
+    .source-badge-bafin { background: #dc2626; }
+    .source-badge-fca { background: #7c3aed; }
     .card-date { font-size: 14px; color: #6b7280; }
     .card-title { font-size: 18px; font-weight: 600; color: #242322; margin-bottom: 0.75rem; line-height: 1.4; }
     .card-title a { color: inherit; text-decoration: none; }
