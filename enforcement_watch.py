@@ -316,9 +316,12 @@ def main():
     if not filtered:
         print("⚠️  No enforcement actions found even with fallback.\n")
         filtered = articles[:3]  # Last resort: show 3 most recent
-    
-    print("📝 Generating HTML...")
-    html = generate_html(filtered)
+
+    # Sort by date (most recent first)
+filtered.sort(key=lambda x: datetime.fromisoformat(x['published']), reverse=True)
+
+print("📝 Generating HTML...")
+html = generate_html(filtered)
     
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)
