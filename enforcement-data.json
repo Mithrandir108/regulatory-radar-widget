@@ -1,0 +1,30 @@
+{
+  "last_updated": "2026-01-25T15:30:00Z",
+  "total_count": 3,
+  "articles": [
+    {
+      "title": "FCA fines major UK bank £12.4M for AML failures",
+      "source": "FCA UK",
+      "summary": "The Financial Conduct Authority imposed a significant penalty on a major UK retail bank for inadequate anti-money laundering controls that persisted between 2019 and 2023.",
+      "category": "Banking",
+      "severity": "Major",
+      "url": "https://www.fca.org.uk/news/enforcement-actions"
+    },
+    {
+      "title": "AMF sanctions investment firm for client communication breaches",
+      "source": "AMF France",
+      "summary": "French regulator penalized an asset management firm for failing to provide clear and accurate information to clients regarding investment risks.",
+      "category": "Asset Management",
+      "severity": "Moderate",
+      "url": "https://www.amf-france.org/en/sanctions"
+    },
+    {
+      "title": "BaFin issues public warning against unauthorized payment provider",
+      "source": "BaFin Germany",
+      "summary": "German financial regulator published a consumer warning about a payment services provider operating without proper licensing.",
+      "category": "Payment Services",
+      "severity": "Minor",
+      "url": "https://www.bafin.de/EN/Consumers/consumers_node_en.html"
+    }
+  ]
+}
